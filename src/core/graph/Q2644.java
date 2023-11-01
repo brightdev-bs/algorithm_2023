@@ -3,10 +3,7 @@ package core.graph;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Q2644 {
 
@@ -40,11 +37,12 @@ public class Q2644 {
     static FastReader sc = new FastReader();
 
     static List<List<Integer>> list = new ArrayList<>();
-    static boolean[] visited;
+    static int[] visited;
 
     public static void main(String[] args) {
         int N = sc.nextInt();
-        visited = new boolean[N + 1];
+        visited = new int[N + 1];
+        Arrays.fill(visited, Integer.MAX_VALUE);
 
         int s = sc.nextInt();
         int e = sc.nextInt();
@@ -58,21 +56,22 @@ public class Q2644 {
             int x = sc.nextInt();
             int y = sc.nextInt();
             list.get(y).add(x);
+            list.get(x).add(y);
         }
 
-        int a = DFS(s, 0);
-        int b = DFS(e, 0);
-        System.out.println(a);
-        System.out.println(b);
+        visited[s] = 0;
+        DFS(s, 0);
+
+        if(visited[e] == Integer.MAX_VALUE) System.out.println(-1);
+        else System.out.println(visited[s] + visited[e]);
     }
 
-    public static int DFS(int n, int count) {
-        Integer next = list.get(n).get(0);
-        if (!visited[next]) {
-            visited[next] = true;
-            return DFS(next, count + 1);
+    public static void DFS(int n, int count) {
+        for (Integer next : list.get(n)) {
+            if(visited[next] == Integer.MAX_VALUE) {
+                visited[next] = count + 1;
+                DFS(next, count + 1);
+            }
         }
-
-        return -1;
     }
 }
